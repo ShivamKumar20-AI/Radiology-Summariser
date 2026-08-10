@@ -5,3 +5,6 @@ venv/
 .env
 model/checkpoints/
 data/raw/
+data/interim/
+data/processed/predictions_data.csv
+model/final_epoch1/
