@@ -38,7 +38,7 @@ Then fire up the API:
 uvicorn src.api:app --reload
 ```
 
-Once it's running, you can hit the docs at `http://127.0.0.1:8000/docs` to see what endpoints are available.
+Once it's running, you can hit the docs at `(https://radiology-summariser.fly.dev/docs)` to see what endpoints are available.
 
 ## Trying it out
 
