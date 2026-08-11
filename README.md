@@ -4,7 +4,7 @@ I built this project to experiment with fine-tuning language models for medical 
 
 ## What's under the hood
 
-The base model is `google-t5/t5-small`, and I saved the fine-tuned weights to `model/final`. I trained it for 2 epochs. After the first epoch, I was getting a ROUGE-1 F1 of about 0.41, which bumped up to 0.45 after the second pass—not a huge jump, but enough to see the model learning something useful.
+The base model is `google-t5/t5-small`, and I saved the fine-tuned weights to `model/final`. I trained it for 2 epochs. After the first epoch, I was getting a ROUGE-1 F1 of about 0.41, which bumped up to 0.45 after the second pass not a huge jump, but enough to see the model learning something useful.
 
 ## How the repo's laid out
 
