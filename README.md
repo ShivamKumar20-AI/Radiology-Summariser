@@ -2,7 +2,7 @@
 
 I built this project to experiment with fine-tuning language models for medical text summarisation. It uses a T5-small model trained to generate radiology impressions from chest X-ray findings.
 
-## What's under the hood
+## What's behind the machine
 
 The base model is `google-t5/t5-small`, and I saved the fine-tuned weights to `model/final`. I trained it for 2 epochs. After the first epoch, I was getting a ROUGE-1 F1 of about 0.41, which bumped up to 0.45 after the second pass not a huge jump, but enough to see the model learning something useful.
 
