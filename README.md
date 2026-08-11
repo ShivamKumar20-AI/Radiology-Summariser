@@ -54,7 +54,7 @@ The model should spit back a generated impression based on what you send.
 
 ## How it performed
 
-The ROUGE-1 F1 score went from 0.4090 after epoch one to 0.4509 after epoch two. When I tested the API manually, it picked up on some abnormalities reasonably well, but it did miss a few clinically important findings here and there—so there's definitely room for improvement.
+The ROUGE-1 F1 score went from 0.4090 after epoch one to 0.4509 after epoch two. When I tested the API manually, it picked up on some abnormalities reasonably well, but it did miss a few clinically important findings here and there so there's definitely room for improvement.
 
 ## A word of caution
 
