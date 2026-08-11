@@ -59,3 +59,18 @@ The ROUGE-1 F1 score went from 0.4090 after epoch one to 0.4509 after epoch two.
 ## A word of caution
 
 This is very much a research prototype. Don't use it for actual clinical diagnosis or as a substitute for a trained radiologist. It would need a lot more training, proper validation, and clinical evaluation before it could be trusted in any real-world setting.
+
+## Some of the Limitations of the model
+
+
+The model is a prototype and that it shouldnt be used as a tool for clinical diagnosis or treatment decisions.
+The size of the datasets may be small so it doesn't represent all the scans at all the hospitals
+Generate summaries have at times omitted details of findings. Which goes to accuracy.
+More efficient resources out there and i didnt use them.
+Real clinical validations are needed to make sure that findings are accurate.
+Future improvements can enhance the security aspect of this such as MFA and use HTTPS.
+
+
+## Final word
+
+In summary i managed to create a prototype AI system for summarising radiology findings. The data was cleaned and processing before being split into a 80/20 split for training and test sets. I used a google t5 model and fine tuned it into a text to text summarisation model. The final F1 score of 0.45 exceeded the requirements needed for this project. While there is scope for improvements in terms of accuracy, security and aesthetic. This meets the needs of the project.
