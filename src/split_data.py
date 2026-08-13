@@ -1,4 +1,4 @@
-import os # import os allows us to read files and write files
+from pathlib import Path # import the tool used to represent and manipulate filesystem paths.
 import pandas as pd # pandas allows us to read/create tables
 from sklearn.model_selection import train_test_split # from the scikit learn library this allows us to split data for training and testing
 
@@ -14,17 +14,20 @@ train_data, test_data = train_test_split(
     data, test_size=0.2, random_state=42
 )
 
+processed_dir = Path("data/processed")
+processed_dir.mkdir(parents=True, exist_ok=True)
+
 #saving the data to the processed folder as a csv file
 #index makes sure that it doesnt create any extra columns
 
 train_data.to_csv(
-    "data/processed/train_data.csv",
+    processed_dir / "train_data.csv",
     index=False
 )
 
 test_data.to_csv(
-    "data/processed/test_data.csv",
-    index=False 
+    processed_dir / "test_data.csv",
+    index=False
 )
 print("Total rows", len(data)) # prints original number of rows in the data
 print("Training rows", len(train_data)) # nuber of rows that will be used to train the model
