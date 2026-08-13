@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Radiology Summariser</title>
+</head>
+<body>
+    <h1>Radiology Summariser</h1>
+
+    <form id="summary-form">
+        <label for="findings">Radiology findings:</label><br>
+        <textarea id="findings" rows="10" cols="60" required></textarea><br><br>
+        <button type="submit">Generate Impression</button>
+    </form>
+
+    <h2>Generated Impression</h2>
+    <p id="result">The impression will appear here.</p>
+
+    <script>
+        const form = document.getElementById("summary-form");
+        const findings = document.getElementById("findings");
+        const result = document.getElementById("result");
+
+        form.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            result.textContent = "Generating impression...";
+
+            const response = await fetch("/get_summary", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    findings: findings.value
+                })
+            });
+
+            const data = await response.json();
+
+            result.textContent =
+                data.impression || data.summary || data.output;
+        });
+    </script>
+</body>
+</html>

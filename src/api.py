@@ -1,4 +1,7 @@
 import torch
+from fastapi.responses import FileResponse
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
 from fastapi import FastAPI # importing in the API
 from pydantic import BaseModel
 from transformers import(
@@ -14,6 +17,19 @@ model = AutoModelForSeq2SeqLM.from_pretrained(model_path)
 model.eval() # only evaluate not test
 
 app = FastAPI() # 
+
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
+STATIC_DIR = PROJECT_ROOT / "static"
+
+@app.get("/")
+def serve_frontend():
+    return FileResponse(STATIC_DIR / "index.html")
+
+app.mount(
+    "/static",
+    StaticFiles(directory=STATIC_DIR),
+    name="static",
+)
 
 class SummaryRequest(BaseModel):
     findings: str
@@ -45,16 +61,8 @@ def create_summary(findings): # same code we used in the sample code and when we
 
 #creating API endpoint
 
-@app.get("/")
-def home():
-
-    return {
-        "message": "Radiology summariser API is running"
-    }
-
-
-@app.post("/Summarize")
-def summarise(request:SummaryRequest):
+@app.post("/get_summary")
+def summarise(request: SummaryRequest):
         impression = create_summary(request.findings)
 
         return {
