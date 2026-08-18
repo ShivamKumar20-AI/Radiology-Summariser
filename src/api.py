@@ -25,6 +25,11 @@ STATIC_DIR = PROJECT_ROOT / "static"
 def serve_frontend():
     return FileResponse(STATIC_DIR / "index.html")
 
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
 app.mount(
     "/static",
     StaticFiles(directory=STATIC_DIR),
