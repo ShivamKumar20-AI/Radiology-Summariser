@@ -1,16 +1,24 @@
-# flyctl launch added from .gitignore
-**/__pycache__
+# Python caches
+**/__pycache__/
 **/*.pyc
-**/.venv
-**/venv
-**/.env
-**/model/checkpoints
-**/data/raw
-**/data/interim
-**/data/processed/predictions_data.csv
-**/model/final_epoch1
 
-# flyctl launch added from .venv/.gitignore
-# Created by venv; see https://docs.python.org/3/library/venv.html
-.venv/**/*
-fly.toml
+# Local virtual environments
+.venv/
+.venv-e2e/
+venv/
+
+# Environment files
+.env
+.env.*
+
+# Large or local-only model/data files
+model/checkpoints/
+data/raw/
+data/interim/
+data/processed/predictions_data.csv
+model/final_epoch1/
+
+# Git and local tooling
+.git/
+.gitignore
+.dockerignore
