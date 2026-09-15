@@ -1,47 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Radiology Summariser</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Radiology findings summarisation prototype">
+  <title>Radiology Summariser</title>
+
+  <style>
+    :root {
+      --navy: #10233f;
+      --blue: #2563eb;
+      --light-blue: #eef5ff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --border: #dbe3ee;
+      --background: #f5f8fc;
+      --white: #ffffff;
+      --green: #16845b;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--background);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.5;
+    }
+
+    .container {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    header {
+      color: var(--white);
+      background: var(--navy);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 68px;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .brand-icon {
+      display: grid;
+      place-items: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      color: var(--navy);
+      background: #9de7f1;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    .brand-name {
+      font-weight: bold;
+      font-size: 17px;
+    }
+
+    .brand-subtitle {
+      color: #b8c7dd;
+      font-size: 12px;
+    }
+
+    .online {
+      color: #baf3d4;
+      font-size: 13px;
+    }
+
+    .online::before {
+      content: "";
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      margin-right: 7px;
+      border-radius: 50%;
+      background: #36c982;
+    }
+
+    .hero {
+      padding: 55px 0;
+      color: var(--white);
+      background: linear-gradient(135deg, var(--navy), #1d4675);
+    }
+
+    .hero h1 {
+      max-width: 650px;
+      margin: 0;
+      font-size: clamp(34px, 5vw, 54px);
+      line-height: 1.08;
+      letter-spacing: -1.5px;
+    }
+
+    .hero p {
+      max-width: 620px;
+      margin: 18px 0 0;
+      color: #d3deed;
+      font-size: 17px;
+    }
+
+    main {
+      padding: 32px 0 55px;
+    }
+
+    .workspace {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .card {
+      padding: 25px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--white);
+      box-shadow: 0 8px 25px rgba(16, 35, 63, 0.07);
+    }
+
+    .card h2 {
+      margin: 0;
+      color: var(--navy);
+      font-size: 20px;
+    }
+
+    .card p {
+      margin: 6px 0 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 235px;
+      padding: 14px;
+      resize: vertical;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--text);
+      background: #fbfdff;
+      font: inherit;
+      line-height: 1.6;
+    }
+
+    textarea:focus {
+      outline: 3px solid #d9e8ff;
+      border-color: var(--blue);
+    }
+
+    .counter {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      text-align: right;
+      font-size: 12px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    button {
+      padding: 11px 16px;
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+      font: inherit;
+      font-weight: bold;
+    }
+
+    .primary-button {
+      color: var(--white);
+      background: var(--blue);
+    }
+
+    .primary-button:hover {
+      background: #1d4ed8;
+    }
+
+    .secondary-button {
+      color: #36506f;
+      border: 1px solid var(--border);
+      background: var(--white);
+    }
+
+    .secondary-button:hover {
+      background: var(--light-blue);
+    }
+
+    .output {
+      min-height: 235px;
+      padding: 16px;
+      border-left: 4px solid var(--blue);
+      border-radius: 4px 9px 9px 4px;
+      color: #30445f;
+      background: var(--light-blue);
+      white-space: pre-wrap;
+    }
+
+    .output.empty {
+      color: var(--muted);
+      background: #fbfdff;
+    }
+
+    .copy-button {
+      margin-top: 15px;
+      color: var(--blue);
+      border: 1px solid #b9d1f5;
+      background: var(--white);
+    }
+
+    .copy-button:disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+
+    .metrics {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .metric {
+      padding: 16px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--white);
+    }
+
+    .metric-label {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .metrics-note {
+      margin: 12px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .metric-value {
+      margin-top: 4px;
+      color: var(--navy);
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .api-note {
+      margin-top: 20px;
+      padding: 18px 20px;
+      border-radius: 10px;
+      color: #dbe8fa;
+      background: var(--navy);
+    }
+
+    .api-note strong {
+      color: var(--white);
+    }
+
+    .api-note code {
+      color: #9de7f1;
+      font-family: monospace;
+    }
+
+    footer {
+      padding: 25px 0;
+      color: var(--muted);
+      text-align: center;
+      font-size: 12px;
+    }
+
+    @media (max-width: 760px) {
+      .workspace,
+      .metrics {
+        grid-template-columns: 1fr;
+      }
+
+      .header-content {
+        align-items: flex-start;
+        flex-direction: column;
+        justify-content: center;
+        padding: 14px 0;
+      }
+
+      .hero {
+        padding: 42px 0;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Radiology Summariser</h1>
+  <header>
+    <div class="container header-content">
+      <div class="brand">
+        <div class="brand-icon">R</div>
+        <div>
+          <div class="brand-name">Radiology Summariser</div>
+          <div class="brand-subtitle">Clinical AI prototype</div>
+        </div>
+      </div>
+      <div class="online">System online</div>
+    </div>
+  </header>
 
-    <form id="summary-form">
-        <label for="findings">Radiology findings:</label><br>
-        <textarea id="findings" rows="10" cols="60" required></textarea><br><br>
-        <button type="submit">Generate Impression</button>
-    </form>
+  <section class="hero">
+    <div class="container">
+      <h1>Clearer radiology summaries, generated from clinical findings.</h1>
+      <p>A simple AI-assisted tool that transforms free-text radiology findings into concise impressions for faster review.</p>
+    </div>
+  </section>
 
-    <h2>Generated Impression</h2>
-    <p id="result">The impression will appear here.</p>
+  <main>
+    <div class="container">
+      <div class="workspace">
+        <section class="card">
+          <h2>Clinical findings</h2>
+          <p>Enter the findings from a radiology report.</p>
 
-    <script>
-        const form = document.getElementById("summary-form");
-        const findings = document.getElementById("findings");
-        const result = document.getElementById("result");
+          <textarea id="findings" maxlength="5000" placeholder="Example: The lungs are clear. Heart size and mediastinal contours are normal..."></textarea>
+          <span id="counter" class="counter">0 / 5000</span>
 
-        form.addEventListener("submit", async function (event) {
-            event.preventDefault();
+          <div class="buttons">
+            <button id="generate-button" class="primary-button">Generate impression</button>
+            <button id="clear-button" class="secondary-button">Clear</button>
+          </div>
+        </section>
 
-            result.textContent = "Generating impression...";
+        <section class="card">
+          <h2>AI-generated impression</h2>
+          <p>The model output will appear below.</p>
 
-            const response = await fetch("/get_summary", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    findings: findings.value
-                })
-            });
+          <div id="output" class="output empty">Your generated impression will appear here.</div>
+          <button id="copy-button" class="copy-button" disabled>Copy impression</button>
+        </section>
+      </div>
 
-            const data = await response.json();
+      <section class="metrics" aria-label="Model performance">
+        <div class="metric">
+          <div class="metric-label">ROUGE-1 F1</div>
+          <div class="metric-value">0.450</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">ROUGE-2 F1</div>
+          <div class="metric-value">0.343</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">ROUGE-L F1</div>
+          <div class="metric-value">0.446</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">API framework</div>
+          <div class="metric-value">FastAPI</div>
+        </div>
+      </section>
 
-            result.textContent =
-                data.impression || data.summary || data.output;
+      <p class="metrics-note">
+        ROUGE scores compare generated impressions with the radiologists' own impressions across
+        all 543 held-out test reports. See the README for known limitations, including missed
+        consolidation.
+      </p>
+
+      <section class="api-note">
+        <strong>API endpoint:</strong>
+        <code>POST /get_summary</code>
+        <span> — sends findings and returns an impression.</span>
+      </section>
+    </div>
+  </main>
+
+  <footer>
+    Built with Python, PyTorch, FastAPI and Hugging Face. Prototype for demonstration only; not a substitute for clinical judgement.
+  </footer>
+
+  <script>
+    const findingsInput = document.getElementById("findings");
+    const counter = document.getElementById("counter");
+    const output = document.getElementById("output");
+    const generateButton = document.getElementById("generate-button");
+    const clearButton = document.getElementById("clear-button");
+    const copyButton = document.getElementById("copy-button");
+
+    // Keep the character count up to date.
+    findingsInput.addEventListener("input", () => {
+      counter.textContent = `${findingsInput.value.length} / 5000`;
+    });
+
+    // Send findings to the API.
+    generateButton.addEventListener("click", async () => {
+      const findings = findingsInput.value.trim();
+
+      if (!findings) {
+        output.textContent = "Please enter some radiology findings first.";
+        output.classList.remove("empty");
+        copyButton.disabled = true;
+        return;
+      }
+
+      generateButton.disabled = true;
+      generateButton.textContent = "Generating...";
+      output.textContent = "Analysing findings...";
+      output.classList.remove("empty");
+      copyButton.disabled = true;
+
+      try {
+        const response = await fetch("/get_summary", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({ findings })
         });
-    </script>
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.detail || "The API request failed.");
+        }
+
+        output.textContent = data.impression || "No impression was returned.";
+        copyButton.disabled = !data.impression;
+      } catch (error) {
+        output.textContent = "Unable to generate a summary. Check that the API is running and try again.";
+        copyButton.disabled = true;
+      } finally {
+        generateButton.disabled = false;
+        generateButton.textContent = "Generate impression";
+      }
+    });
+
+    // Clear the input and output.
+    clearButton.addEventListener("click", () => {
+      findingsInput.value = "";
+      counter.textContent = "0 / 5000";
+      output.textContent = "Your generated impression will appear here.";
+      output.classList.add("empty");
+      copyButton.disabled = true;
+    });
+
+    // Copy the result to the clipboard.
+    copyButton.addEventListener("click", async () => {
+      await navigator.clipboard.writeText(output.textContent);
+      copyButton.textContent = "Copied";
+      setTimeout(() => {
+        copyButton.textContent = "Copy impression";
+      }, 1500);
+    });
+  </script>
 </body>
 </html>

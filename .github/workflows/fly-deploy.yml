@@ -13,6 +13,10 @@ jobs:
     concurrency: deploy-group    # optional: ensure only one action runs at a time
     steps:
       - uses: actions/checkout@v4
+        with:
+          # The model weights are stored in Git LFS. Without this, the
+          # deploy would ship LFS pointer files and the API could not load the model.
+          lfs: true
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
         env:
