@@ -151,6 +151,27 @@ These scores were recalculated from data/processed/predictions_epoch2.csv. The d
 
 ROUGE measures word overlap. A high score does not prove an impression is clinically correct, and a normal-sounding summary can score well while missing a finding.
 
+## Finding sensitivity, and an oversampling experiment
+ROUGE is a weak guide here. Writing "No acute cardiopulmonary abnormality." for every report scores ROUGE-1 0.436, within 0.014 of the model, because most impressions are normal. `src/evaluate_findings.py` therefore also measures how often the model names a finding that the reference impression names (negated mentions such as "no pneumothorax" are ignored by a simple rule, so this is a heuristic, not a clinical parser).
+
+`src/train_balanced.py` repeats every training report whose impression names a finding three times, then fine-tunes the same T5-small for two epochs. Both models were scored on the same 543 test reports:
+
+| | Current model | Oversampled model |
+|---|---|---|
+| ROUGE-1 F1 | 0.450 | 0.433 |
+| Exact "normal" sentence | 64.3% | 54.5% (references: 11.8%) |
+| Consolidation named | 20/64 (31%) | 39/64 (61%) |
+| Effusion named | 6/17 (35%) | 10/17 (59%) |
+| Cardiomegaly named | 11/39 (28%) | 12/39 (31%) |
+| Pneumothorax named | 1/4 | 1/4 |
+| Edema named | 0/14 | 2/14 |
+
+Oversampling nearly doubles sensitivity for consolidation and effusion at a cost of 0.017 ROUGE-1. It does not fix edema, pneumothorax or cardiomegaly, and the model still over-reports normal studies. The deployed model is unchanged. The oversampled weights are not committed (240 MB); regenerate them with `python src/train_balanced.py 3 2`, or `USE_CPU=1 BATCH_SIZE=4 python src/train_balanced.py 3 2` on a machine short of memory.
+
+32 test reports have FINDINGS text identical to a training report (29 distinct texts). Excluding them changes ROUGE-1 from 0.450 to 0.447, so the overlap is small, but it is documented in `tests/test_data.py`.
+
+Run `pytest` for the unit tests (metric logic and data checks).
+
 # Limitations
 This project is a prototype and is not suitable for clinical use.
 
@@ -171,9 +192,7 @@ The model has learned to prefer that answer. It returns exactly "No acute cardio
 Radiologists also describe normal studies in other words, so not all of those 349 are wrong. But the model uses a normal impression far more often than the data supports.
 
 ## Possible improvements
-Balance the training data, for example by weighting or oversampling abnormal reports.
-
-Measure sensitivity for important findings, such as consolidation, effusion and pneumothorax, as well as ROUGE.
+Oversampling abnormal reports helped (see above) but did not solve the problem. Next steps: class-weighted loss rather than repeated rows, a grouped train/test split that keeps identical reports together, and sensitivity scoring by a clinician rather than keyword rules.
 
 Try a larger model, such as t5-base or a model pre-trained on clinical text.
 
