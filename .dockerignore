@@ -17,6 +17,8 @@ data/raw/
 data/interim/
 data/processed/predictions_data.csv
 model/final_epoch1/
+model/final_epoch2/
+model/balanced/
 
 # Git and local tooling
 .git/
