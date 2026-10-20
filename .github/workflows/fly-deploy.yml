@@ -1,11 +1,10 @@
 # See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
 
 name: Fly Deploy
+# Manual only. The live demo now runs on Streamlit (see streamlit_demo/), and this Fly deploy is kept
+# for the API version. Run it by hand from the Actions tab if you want to deploy to Fly.
 on:
-  push:
-    branches:
-      - main
-      - master
+  workflow_dispatch:
 jobs:
   deploy:
     name: Deploy app
