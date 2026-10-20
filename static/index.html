@@ -430,13 +430,17 @@
         const data = await response.json();
 
         if (!response.ok) {
-          throw new Error(data.detail || "The API request failed.");
+          // The server sends a plain message for rate limits and busy states; anything else is generic.
+          throw new Error(typeof data.detail === "string" ? data.detail : "The API request failed.");
         }
 
         output.textContent = data.impression || "No impression was returned.";
         copyButton.disabled = !data.impression;
       } catch (error) {
-        output.textContent = "Unable to generate a summary. Check that the API is running and try again.";
+        const known = ["Too many requests", "The service is busy", "Something went wrong"];
+        output.textContent = known.some((m) => error.message.startsWith(m))
+          ? error.message
+          : "Unable to generate a summary. Check that the API is running and try again.";
         copyButton.disabled = true;
       } finally {
         generateButton.disabled = false;
