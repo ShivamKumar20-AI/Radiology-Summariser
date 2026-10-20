@@ -184,6 +184,18 @@ The service is public and has no login, so these limits protect the small server
 
 These are basic protections for a demo. There is no login, and the limits are per address, so they will not stop a determined attacker. Do not paste real patient data into the demo.
 
+# Free hosted demo (Streamlit)
+`streamlit_demo/streamlit_app.py` is a Streamlit version of the demo for free hosting on Streamlit Community Cloud. It uses the same model and the same limits as the API: 5,000 characters maximum, 5 requests a minute per session, 20 a minute overall, and at most 2 summaries at once. Nothing is stored and the log records only size and timing.
+
+The model weights are loaded from `model/final` if present, otherwise downloaded from a private Hugging Face repo named in the `MODEL_HF_REPO` secret, using a read-only `HF_TOKEN`.
+
+```bash
+pip install -r streamlit_demo/requirements.txt
+streamlit run streamlit_demo/streamlit_app.py
+```
+
+The FastAPI service in `src/` and the Dockerfile remain as the API version.
+
 # Limitations
 This project is a prototype and is not suitable for clinical use.
 
